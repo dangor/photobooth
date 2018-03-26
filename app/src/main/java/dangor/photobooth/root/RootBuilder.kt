@@ -8,6 +8,7 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
 import dangor.photobooth.R
+import dangor.photobooth.root.home.HomeBuilder
 import javax.inject.Named
 import javax.inject.Qualifier
 import javax.inject.Scope
@@ -36,7 +37,7 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
     }
 
     override fun inflateView(inflater: LayoutInflater, parentViewGroup: ViewGroup): RootView? {
-        return inflater.inflate(R.layout.activity_main, parentViewGroup, false) as RootView
+        return RootView(parentViewGroup.context)
     }
 
     interface ParentComponent
@@ -55,7 +56,8 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
                     component: Component,
                     view: RootView,
                     interactor: RootInteractor): RootRouter {
-                return RootRouter(view, interactor, component)
+                return RootRouter(view, interactor, component,
+                        HomeBuilder(component))
             }
 
             @RootScope @Provides @JvmStatic @Named("loggerTag")
@@ -65,7 +67,8 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
 
     @RootScope
     @dagger.Component(modules = arrayOf(Module::class), dependencies = arrayOf(ParentComponent::class))
-    interface Component : InteractorBaseComponent<RootInteractor>, BuilderComponent {
+    interface Component : InteractorBaseComponent<RootInteractor>, BuilderComponent,
+            HomeBuilder.ParentComponent {
 
         @dagger.Component.Builder
         interface Builder {
