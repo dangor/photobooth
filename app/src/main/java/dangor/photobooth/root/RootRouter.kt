@@ -2,6 +2,7 @@ package dangor.photobooth.root
 
 import com.uber.rib.core.ViewRouter
 import dangor.photobooth.root.home.HomeBuilder
+import dangor.photobooth.root.home.HomeRouter
 
 /**
  * Adds and removes children of {@link RootBuilder.RootScope}.
@@ -13,9 +14,11 @@ class RootRouter(
         private val homeBuilder: HomeBuilder
 ) : ViewRouter<RootView, RootInteractor, RootBuilder.Component>(view, interactor, component) {
 
+    var home: HomeRouter? = null
+
     fun attachHome() {
-        val router = homeBuilder.build(view)
-        attachChild(router)
-        view.addView(router.view)
+        home = homeBuilder.build(view)
+        attachChild(home)
+        view.addView(home?.view)
     }
 }

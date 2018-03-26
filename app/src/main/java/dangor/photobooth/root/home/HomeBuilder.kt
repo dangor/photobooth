@@ -8,6 +8,8 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
 import dangor.photobooth.R
+import dangor.photobooth.root.home.photo.PhotoBuilder
+import dangor.photobooth.root.home.photo.PhotoInteractor
 import javax.inject.Named
 import javax.inject.Qualifier
 import javax.inject.Scope
@@ -55,17 +57,24 @@ class HomeBuilder(dependency: ParentComponent) : ViewBuilder<HomeView, HomeRoute
                     component: Component,
                     view: HomeView,
                     interactor: HomeInteractor): HomeRouter {
-                return HomeRouter(view, interactor, component)
+                return HomeRouter(view, interactor, component,
+                        PhotoBuilder(component))
             }
 
             @HomeScope @Provides @JvmStatic @Named("loggerTag")
             internal fun loggerTag(): String = HomeInteractor::class.java.simpleName
+
+            @HomeScope @Provides @JvmStatic
+            internal fun photoListener(interactor: HomeInteractor): PhotoInteractor.Listener {
+                return interactor.PhotoListener()
+            }
         }
     }
 
     @HomeScope
     @dagger.Component(modules = arrayOf(Module::class), dependencies = arrayOf(ParentComponent::class))
-    interface Component : InteractorBaseComponent<HomeInteractor>, BuilderComponent {
+    interface Component : InteractorBaseComponent<HomeInteractor>, BuilderComponent,
+            PhotoBuilder.ParentComponent {
 
         @dagger.Component.Builder
         interface Builder {

@@ -19,6 +19,10 @@ class RootInteractor : Interactor<RootInteractor.RootPresenter, RootRouter>() {
         router.attachHome()
     }
 
+    override fun handleBackPress(): Boolean {
+        return router.home?.handleBackPress() ?: false
+    }
+
     /**
      * Presenter interface implemented by this RIB's view.
      */

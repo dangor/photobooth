@@ -7,8 +7,10 @@ import com.uber.rib.core.ViewBuilder
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
+import dangor.photobooth.MainActivity
 import dangor.photobooth.R
 import dangor.photobooth.root.home.HomeBuilder
+import dangor.photobooth.services.ServiceModule
 import javax.inject.Named
 import javax.inject.Qualifier
 import javax.inject.Scope
@@ -25,13 +27,14 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
      * @param parentViewGroup parent view group that this router's view will be added to.
      * @return a new [RootRouter].
      */
-    fun build(parentViewGroup: ViewGroup): RootRouter {
+    fun build(parentViewGroup: ViewGroup, activity: MainActivity): RootRouter {
         val view = createView(parentViewGroup)
         val interactor = RootInteractor()
         val component = DaggerRootBuilder_Component.builder()
                 .parentComponent(dependency)
                 .view(view)
                 .interactor(interactor)
+                .activity(activity)
                 .build()
         return component.rootRouter()
     }
@@ -66,7 +69,7 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
     }
 
     @RootScope
-    @dagger.Component(modules = arrayOf(Module::class), dependencies = arrayOf(ParentComponent::class))
+    @dagger.Component(modules = arrayOf(Module::class, ServiceModule::class), dependencies = arrayOf(ParentComponent::class))
     interface Component : InteractorBaseComponent<RootInteractor>, BuilderComponent,
             HomeBuilder.ParentComponent {
 
@@ -77,6 +80,9 @@ class RootBuilder(dependency: ParentComponent) : ViewBuilder<RootView, RootRoute
 
             @BindsInstance
             fun view(view: RootView): Builder
+
+            @BindsInstance
+            fun activity(activity: MainActivity): Builder
 
             fun parentComponent(component: ParentComponent): Builder
             fun build(): Component
