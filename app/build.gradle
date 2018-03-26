@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 26
     defaultConfig {
@@ -30,4 +32,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    kapt 'com.uber.rib:rib-compiler-test:0.9.1'
+    implementation 'com.uber.rib:rib-android:0.9.1'
+    testImplementation 'com.uber.rib:rib-test-utils:0.9.1'
+
+    implementation 'com.google.dagger:dagger:2.15'
+    kapt 'com.google.dagger:dagger-compiler:2.15'
+
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.11'
 }
