@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- blue and gold palette  http://paletton.com/#uid=b3O1t0x0kwyvZjGDgp2yryDoRDAjx -->
+    <!-- blush palette http://paletton.com/#uid=1030u0k7Dy41kU940JEc6s1hsn2 -->
+    <color name="black">#000000</color>
+    <color name="blush">#ffc7c2</color>
+    <color name="gold">#ffd700</color>
+    <color name="gold_accent">#ffe764</color>
+    <color name="blue">#1339AC</color>
+    <color name="blue_dark">#092169</color>
+</resources>
