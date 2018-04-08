@@ -11,8 +11,6 @@ import javax.inject.Inject
 
 /**
  * Coordinates Business Logic for [PhotoScope].
- *
- * TODO describe the logic of this scope.
  */
 @RibInteractor
 class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>() {
@@ -28,6 +26,22 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
                 .switchMap { permissionService.request(Permission.CAMERA) }
                 .autoDisposable(this)
                 .subscribe { presenter.cameraPermissionGranted() }
+
+        presenter.startClicks
+                .subscribe {
+                    presenter.setStartButtonVisible(false)
+                    presenter.startTimer(TIMER_LENGTH)
+                }
+
+        presenter.timerDone
+                .subscribe {
+                    presenter.startTimer(TIMER_LENGTH)
+                }
+    }
+
+    override fun handleBackPress(): Boolean {
+        listener.back()
+        return true
     }
 
     /**
@@ -35,8 +49,12 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
      */
     interface PhotoPresenter {
         val cameraPermissionRequests: Observable<Unit>
+        val startClicks: Observable<Unit>
+        val timerDone: Observable<Unit>
 
         fun cameraPermissionGranted()
+        fun setStartButtonVisible(visible: Boolean)
+        fun startTimer(seconds: Int)
     }
 
     /**
@@ -44,5 +62,9 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
      */
     interface Listener {
         fun back()
+    }
+
+    companion object {
+        private const val TIMER_LENGTH = 3
     }
 }

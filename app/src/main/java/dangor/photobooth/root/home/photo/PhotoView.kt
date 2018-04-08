@@ -1,19 +1,28 @@
 package dangor.photobooth.root.home.photo
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraCaptureSession
 import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
+import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.Surface
 import android.view.TextureView
+import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
+import android.widget.Toast
+import dangor.photobooth.extensions.clicks
+import dangor.photobooth.extensions.isVisible
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.photo_view.view.camera_preview
+import kotlinx.android.synthetic.main.photo_view.view.start_button
+import kotlinx.android.synthetic.main.photo_view.view.timer_progress
+import kotlinx.android.synthetic.main.photo_view.view.timer_text
 
 /**
  * Top level view for {@link PhotoBuilder.PhotoScope}.
@@ -21,6 +30,40 @@ import kotlinx.android.synthetic.main.photo_view.view.camera_preview
 class PhotoView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
 ) : FrameLayout(context, attrs, defStyle), PhotoInteractor.PhotoPresenter {
+
+    override val startClicks: Observable<Unit> get() = start_button.clicks
+
+    private val timerDoneSubject = PublishSubject.create<Unit>()
+    override val timerDone: Observable<Unit> get() = timerDoneSubject.hide()
+
+    override fun setStartButtonVisible(visible: Boolean) {
+        start_button.isVisible = visible
+    }
+
+    override fun startTimer(seconds: Int) {
+        CountDown(seconds) { secondsLeft ->
+            timer_text.text = secondsLeft.toString()
+        }.start()
+
+        val animation = ObjectAnimator.ofInt(timer_progress, "progress", 0, 500)
+        animation.duration = seconds * 1000L
+        animation.interpolator = LinearInterpolator()
+        animation.start()
+    }
+
+    private inner class CountDown(
+            seconds: Int,
+            private val onTick: (Int) -> Unit
+    ) : CountDownTimer(seconds * 1000L, 1000L) {
+
+        override fun onFinish() {
+            timerDoneSubject.onNext(Unit)
+        }
+
+        override fun onTick(millisUntilFinished: Long) {
+            this.onTick.invoke(Math.ceil(millisUntilFinished / 1000.0).toInt())
+        }
+    }
 
     private val cameraPermissionRequestSubject = PublishSubject.create<Unit>()
     override val cameraPermissionRequests: Observable<Unit> get() = cameraPermissionRequestSubject.hide()
@@ -70,12 +113,10 @@ class PhotoView @JvmOverloads constructor(
                 }, null)
             }
 
-            override fun onDisconnected(camera: CameraDevice?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+            override fun onDisconnected(camera: CameraDevice?) = Unit
 
             override fun onError(camera: CameraDevice?, error: Int) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                Toast.makeText(context, "Camera Device error $error", Toast.LENGTH_SHORT).show()
             }
 
         }, null)
