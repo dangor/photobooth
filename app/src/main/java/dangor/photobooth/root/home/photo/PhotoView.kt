@@ -11,6 +11,8 @@ import android.util.AttributeSet
 import android.view.Surface
 import android.view.TextureView
 import android.widget.FrameLayout
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.photo_view.view.camera_preview
 
 /**
@@ -20,6 +22,15 @@ class PhotoView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
 ) : FrameLayout(context, attrs, defStyle), PhotoInteractor.PhotoPresenter {
 
+    private val cameraPermissionRequestSubject = PublishSubject.create<Unit>()
+    override val cameraPermissionRequests: Observable<Unit> get() = cameraPermissionRequestSubject.hide()
+
+    override fun cameraPermissionGranted() {
+        openCamera()
+    }
+
+    lateinit var previewSurface: Surface
+
     override fun onFinishInflate() {
         super.onFinishInflate()
 
@@ -27,19 +38,21 @@ class PhotoView @JvmOverloads constructor(
             override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) = Unit
             override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean = false
             override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) = Unit
-            override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) = openCamera(surface)
+            override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+                previewSurface = Surface(surface)
+                openCamera()
+            }
         }
     }
 
-    private fun openCamera(surface: SurfaceTexture) {
-        val previewSurface = Surface(surface)
+    private fun openCamera() {
+        if (context.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            cameraPermissionRequestSubject.onNext(Unit)
+            return
+        }
 
         val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         val cameraId = cameraManager.cameraIdList[0]
-
-        if (context.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-
-        }
 
         cameraManager.openCamera(cameraId, object : CameraDevice.StateCallback() {
             override fun onOpened(camera: CameraDevice?) {

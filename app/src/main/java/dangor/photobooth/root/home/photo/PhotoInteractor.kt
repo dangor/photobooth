@@ -1,10 +1,11 @@
 package dangor.photobooth.root.home.photo
 
-import com.uber.autodispose.ObservableScoper
+import com.uber.autodispose.kotlin.autoDisposable
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibInteractor
 import dangor.photobooth.services.PermissionService
+import dangor.photobooth.services.permissions.Permission
 import io.reactivex.Observable
 import javax.inject.Inject
 
@@ -24,7 +25,8 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
         super.didBecomeActive(savedInstanceState)
 
         presenter.cameraPermissionRequests
-                .to(ObservableScoper(this))
+                .switchMap { permissionService.request(Permission.CAMERA) }
+                .autoDisposable(this)
                 .subscribe { presenter.cameraPermissionGranted() }
     }
 

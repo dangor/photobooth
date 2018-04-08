@@ -6,10 +6,11 @@ import dangor.photobooth.MainActivity
 
 @Module
 class ServiceModule {
-    @Module
-    companion object {
-        @Provides @JvmStatic internal fun permissionService(activity: MainActivity): PermissionService {
-            return PermissionService(activity)
-        }
+    @Provides fun mainActivity(): MainActivity {
+        return MainActivity.instance
+    }
+
+    @Provides fun permissionService(activity: MainActivity): PermissionService {
+        return PermissionService(activity)
     }
 }

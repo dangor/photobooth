@@ -8,6 +8,7 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
 import dangor.photobooth.R
+import dangor.photobooth.services.ServiceModule
 import javax.inject.Named
 import javax.inject.Qualifier
 import javax.inject.Scope
@@ -66,7 +67,7 @@ class PhotoBuilder(dependency: ParentComponent) : ViewBuilder<PhotoView, PhotoRo
     }
 
     @PhotoScope
-    @dagger.Component(modules = arrayOf(Module::class), dependencies = arrayOf(ParentComponent::class))
+    @dagger.Component(modules = arrayOf(Module::class, ServiceModule::class), dependencies = arrayOf(ParentComponent::class))
     interface Component : InteractorBaseComponent<PhotoInteractor>, BuilderComponent {
 
         @dagger.Component.Builder

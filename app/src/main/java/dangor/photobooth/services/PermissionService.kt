@@ -2,6 +2,7 @@ package dangor.photobooth.services
 
 import android.content.pm.PackageManager
 import dangor.photobooth.MainActivity
+import dangor.photobooth.services.permissions.Permission
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
@@ -13,10 +14,10 @@ class PermissionService(private val activity: MainActivity) {
 
     private val permissionsRequests: MutableMap<Int, PublishSubject<Unit>> = mutableMapOf()
 
-    fun request(permissions: Array<String>, requestCode: Int): Observable<Unit> {
+    fun request(permission: Permission): Observable<Unit> {
         val subject = PublishSubject.create<Unit>()
-        permissionsRequests[requestCode] = subject
-        activity.requestPermissions(permissions, requestCode)
+        permissionsRequests[permission.requestCode] = subject
+        activity.requestPermissions(permission.permissions, permission.requestCode)
         return subject.hide()
     }
 
