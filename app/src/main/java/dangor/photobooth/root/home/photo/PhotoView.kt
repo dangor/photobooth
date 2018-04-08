@@ -101,7 +101,7 @@ class PhotoView @JvmOverloads constructor(
             override fun onOpened(camera: CameraDevice?) {
                 camera?.createCaptureSession(listOf(previewSurface), object : CameraCaptureSession.StateCallback() {
                     override fun onConfigureFailed(session: CameraCaptureSession?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        Toast.makeText(context, "Camera Capture Session configure failed", Toast.LENGTH_SHORT).show()
                     }
 
                     override fun onConfigured(session: CameraCaptureSession) {
