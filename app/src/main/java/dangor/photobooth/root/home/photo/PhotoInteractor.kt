@@ -7,6 +7,7 @@ import com.uber.rib.core.RibInteractor
 import dangor.photobooth.services.PermissionService
 import dangor.photobooth.services.permissions.Permission
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import java.io.File
 import javax.inject.Inject
 
@@ -19,6 +20,8 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
     @Inject lateinit var presenter: PhotoPresenter
     @Inject lateinit var listener: Listener
     @Inject lateinit var permissionService: PermissionService
+
+    var savedFiles = emptyList<File>()
 
     override fun didBecomeActive(savedInstanceState: Bundle?) {
         super.didBecomeActive(savedInstanceState)
@@ -39,6 +42,13 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
                     presenter.takePhoto()
                     presenter.hideTimer()
                     presenter.setStartButtonVisible(true)
+                }
+
+        presenter.fileSaved
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    savedFiles += it
+                    presenter.addPhotoPreview(it)
                 }
     }
 
@@ -61,6 +71,7 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
         fun startTimer(seconds: Int)
         fun hideTimer()
         fun takePhoto()
+        fun addPhotoPreview(file: File)
     }
 
     /**

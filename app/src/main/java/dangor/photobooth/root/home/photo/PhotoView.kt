@@ -21,6 +21,7 @@ import android.hardware.camera2.CaptureRequest
 import android.hardware.camera2.CaptureResult
 import android.hardware.camera2.TotalCaptureResult
 import android.media.ImageReader
+import android.net.Uri
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.HandlerThread
@@ -29,19 +30,25 @@ import android.util.AttributeSet
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
+import android.view.LayoutInflater
 import android.view.Surface
 import android.view.TextureView
+import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.Toast
+import dangor.photobooth.R
 import dangor.photobooth.extensions.clicks
 import dangor.photobooth.extensions.isVisible
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.photo_view.view.camera_preview
 import kotlinx.android.synthetic.main.photo_view.view.start_button
+import kotlinx.android.synthetic.main.photo_view.view.taken_photos
 import kotlinx.android.synthetic.main.photo_view.view.timer_progress
 import kotlinx.android.synthetic.main.photo_view.view.timer_text
+import org.joda.time.DateTime
 import java.io.File
 import java.util.Arrays
 import java.util.Collections
@@ -322,7 +329,7 @@ class PhotoView @JvmOverloads constructor(
     }
 
     init {
-        file = File(context.getExternalFilesDir(null), PIC_FILE_NAME)
+        file = newFile()
     }
 
     /**
@@ -667,10 +674,10 @@ class PhotoView @JvmOverloads constructor(
                 override fun onCaptureCompleted(session: CameraCaptureSession,
                                                 request: CaptureRequest,
                                                 result: TotalCaptureResult) {
-                    Toast.makeText(context, "Saved: $file", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, file.toString())
                     unlockFocus()
                     fileSavedSubject.onNext(file)
+                    file = newFile()
                 }
             }
 
@@ -722,6 +729,18 @@ class PhotoView @JvmOverloads constructor(
             requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
                     CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH)
         }
+    }
+
+    private fun newFile(): File {
+        val timeStamp = DateTime.now().toString("yyyyMMdd_HHmmss")
+        return File(context.getExternalFilesDir(null), "${PIC_FILE_NAME}_$timeStamp.jpg")
+    }
+
+    override fun addPhotoPreview(file: File) {
+        val imageView = LayoutInflater.from(context).inflate(R.layout.image_view, taken_photos, false) as ImageView
+        imageView.setImageURI(Uri.fromFile(file))
+        taken_photos.addView(imageView)
+        taken_photos.isVisible = true
     }
 
     companion object {
@@ -828,6 +847,6 @@ class PhotoView @JvmOverloads constructor(
             }
         }
 
-        private const val PIC_FILE_NAME = "pic.jpg"
+        private const val PIC_FILE_NAME = "pic"
     }
 }
