@@ -381,12 +381,13 @@ class PhotoView @JvmOverloads constructor(
                         maxPreviewWidth, maxPreviewHeight,
                         largest)
 
-                // We fit the aspect ratio of TextureView to the size of preview we picked.
-                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    textureView.setAspectRatio(previewSize.width, previewSize.height)
-                } else {
-                    textureView.setAspectRatio(previewSize.height, previewSize.width)
-                }
+                // Keep the texture full screen, okay if some is cropped off
+//                // We fit the aspect ratio of TextureView to the size of preview we picked.
+//                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                    textureView.setAspectRatio(previewSize.width, previewSize.height)
+//                } else {
+//                    textureView.setAspectRatio(previewSize.height, previewSize.width)
+//                }
 
                 // Check if the flash is supported.
                 flashSupported =
