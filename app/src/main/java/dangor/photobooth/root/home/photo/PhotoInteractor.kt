@@ -7,6 +7,7 @@ import com.uber.rib.core.RibInteractor
 import dangor.photobooth.services.PermissionService
 import dangor.photobooth.services.permissions.Permission
 import io.reactivex.Observable
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -35,7 +36,9 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
 
         presenter.timerDone
                 .subscribe {
-                    presenter.startTimer(TIMER_LENGTH)
+                    presenter.takePhoto()
+                    presenter.hideTimer()
+                    presenter.setStartButtonVisible(true)
                 }
     }
 
@@ -51,10 +54,13 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
         val cameraPermissionRequests: Observable<Unit>
         val startClicks: Observable<Unit>
         val timerDone: Observable<Unit>
+        val fileSaved: Observable<File>
 
         fun cameraPermissionGranted()
         fun setStartButtonVisible(visible: Boolean)
         fun startTimer(seconds: Int)
+        fun hideTimer()
+        fun takePhoto()
     }
 
     /**
