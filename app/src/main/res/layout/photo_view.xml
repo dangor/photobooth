@@ -6,10 +6,17 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <dangor.photobooth.root.home.photo.AutoFitTextureView
-        android:id="@+id/camera_preview"
+    <dangor.photobooth.root.home.photo.CameraCaptureView
+        android:id="@+id/camera_capture"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <dangor.photobooth.root.home.photo.AutoFitTextureView
+            android:id="@+id/camera_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </dangor.photobooth.root.home.photo.CameraCaptureView>
 
     <FrameLayout
         android:id="@+id/timer"
