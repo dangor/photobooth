@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dangor.photobooth.root.home.photo.review.ReviewView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_blurry_bubbles"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/taken_photos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:divider="@drawable/image_view_spacer"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="16dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:paddingTop="16dp"
+            android:showDividers="middle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/controls"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:src="@drawable/photobooth_footer"
+                tools:ignore="ContentDescription"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/controls"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/taken_photos"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:id="@+id/share_button"
+                android:layout_width="300dp"
+                android:layout_height="80dp"
+                android:background="@drawable/rounded_gold_8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/ic_email_black_24dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:text="Share via email"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="italic"
+                    tools:ignore="HardcodedText"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/done_button"
+                android:layout_width="300dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/rounded_gold_8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/ic_done_black_24dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:text="Finished"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="italic"
+                    tools:ignore="HardcodedText"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+</dangor.photobooth.root.home.photo.review.ReviewView>

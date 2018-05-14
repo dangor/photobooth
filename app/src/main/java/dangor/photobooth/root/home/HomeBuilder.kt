@@ -10,6 +10,8 @@ import dagger.Provides
 import dangor.photobooth.R
 import dangor.photobooth.root.home.photo.PhotoBuilder
 import dangor.photobooth.root.home.photo.PhotoInteractor
+import dangor.photobooth.root.home.photo.review.ReviewBuilder
+import dangor.photobooth.root.home.photo.review.ReviewInteractor
 import javax.inject.Named
 import javax.inject.Qualifier
 import javax.inject.Scope
@@ -58,7 +60,8 @@ class HomeBuilder(dependency: ParentComponent) : ViewBuilder<HomeView, HomeRoute
                     view: HomeView,
                     interactor: HomeInteractor): HomeRouter {
                 return HomeRouter(view, interactor, component,
-                        PhotoBuilder(component))
+                        PhotoBuilder(component),
+                        ReviewBuilder(component))
             }
 
             @HomeScope @Provides @JvmStatic @Named("loggerTag")
@@ -68,13 +71,19 @@ class HomeBuilder(dependency: ParentComponent) : ViewBuilder<HomeView, HomeRoute
             internal fun photoListener(interactor: HomeInteractor): PhotoInteractor.Listener {
                 return interactor.PhotoListener()
             }
+
+            @HomeScope @Provides @JvmStatic
+            internal fun reviewListener(interactor: HomeInteractor): ReviewInteractor.Listener {
+                return interactor.ReviewListener()
+            }
         }
     }
 
     @HomeScope
     @dagger.Component(modules = arrayOf(Module::class), dependencies = arrayOf(ParentComponent::class))
     interface Component : InteractorBaseComponent<HomeInteractor>, BuilderComponent,
-            PhotoBuilder.ParentComponent {
+            PhotoBuilder.ParentComponent,
+            ReviewBuilder.ParentComponent {
 
         @dagger.Component.Builder
         interface Builder {

@@ -658,7 +658,9 @@ class CameraCaptureView @JvmOverloads constructor(
 
     fun takePhoto() {
         if (isAutofocusSupported) {
-            lockFocus()
+            // Not locking focus since that takes forever on some cameras. Uncomment if you want...
+            // lockFocus()
+            captureStillPicture()
         } else {
             captureStillPicture()
         }

@@ -6,17 +6,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_blurry_bubbles"
+        tools:ignore="ContentDescription"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_blush_bubbles"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="@color/blue"
+            android:background="@color/black_56"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 

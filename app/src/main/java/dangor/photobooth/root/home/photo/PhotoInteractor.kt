@@ -40,8 +40,6 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
         presenter.timerDone
                 .subscribe {
                     presenter.takePhoto()
-                    presenter.hideTimer()
-                    presenter.setStartButtonVisible(true)
                 }
 
         presenter.fileSaved
@@ -49,6 +47,12 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
                 .subscribe {
                     savedFiles += it
                     presenter.addPhotoPreview(it)
+
+                    if (savedFiles.size >= PHOTO_MAX) {
+                        listener.photosTaken(savedFiles)
+                    } else {
+                        presenter.startTimer(TIMER_LENGTH)
+                    }
                 }
     }
 
@@ -79,9 +83,11 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
      */
     interface Listener {
         fun back()
+        fun photosTaken(pictures: List<File>)
     }
 
     companion object {
         private const val TIMER_LENGTH = 3
+        private const val PHOTO_MAX = 4
     }
 }
