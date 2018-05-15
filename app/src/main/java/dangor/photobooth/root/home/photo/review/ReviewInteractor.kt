@@ -28,6 +28,11 @@ class ReviewInteractor : Interactor<ReviewInteractor.ReviewPresenter, ReviewRout
 
         presenter.doneClicks
                 .subscribe { listener.doneClicked() }
+
+        presenter.photoStrip
+                .subscribe {
+                    // TODO: upload to google
+                }
     }
 
     override fun handleBackPress(): Boolean {
@@ -41,6 +46,7 @@ class ReviewInteractor : Interactor<ReviewInteractor.ReviewPresenter, ReviewRout
     interface ReviewPresenter {
         val shareClicks: Observable<Unit>
         val doneClicks: Observable<Unit>
+        val photoStrip: Observable<ByteArray>
 
         fun setPictures(pictures: List<File>)
     }
