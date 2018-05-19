@@ -28,6 +28,7 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
 
         presenter.cameraPermissionRequests
                 .switchMap { permissionService.request(Permission.CAMERA) }
+                .observeOn(AndroidSchedulers.mainThread())
                 .autoDisposable(this)
                 .subscribe { presenter.cameraPermissionGranted() }
 

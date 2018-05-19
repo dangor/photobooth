@@ -8,6 +8,7 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
 import dangor.photobooth.R
+import dangor.photobooth.services.ServiceModule
 import java.io.File
 import javax.inject.Named
 import javax.inject.Qualifier
@@ -72,7 +73,7 @@ class ReviewBuilder(dependency: ParentComponent) : ViewBuilder<ReviewView, Revie
     }
 
     @ReviewScope
-    @dagger.Component(modules = arrayOf(Module::class), dependencies = arrayOf(ParentComponent::class))
+    @dagger.Component(modules = arrayOf(Module::class, ServiceModule::class), dependencies = arrayOf(ParentComponent::class))
     interface Component : InteractorBaseComponent<ReviewInteractor>, BuilderComponent {
 
         @dagger.Component.Builder

@@ -19,9 +19,9 @@ class MainActivity : RibActivity() {
 
     var permissionHandler: PermissionHandler? = null
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        permissionHandler?.permissionResult(requestCode, resultCode)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionHandler?.permissionResult(requestCode, grantResults.toList())
     }
 
     companion object {

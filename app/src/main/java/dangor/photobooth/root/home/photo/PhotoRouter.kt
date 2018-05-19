@@ -1,13 +1,11 @@
 package dangor.photobooth.root.home.photo
 
-import android.view.View
-
 import com.uber.rib.core.ViewRouter
 
 /**
  * Adds and removes children of {@link PhotoBuilder.PhotoScope}.
  *
- * TODO describe the possible child configurations of this scope.
+ * No children
  */
 class PhotoRouter(
         view: PhotoView,

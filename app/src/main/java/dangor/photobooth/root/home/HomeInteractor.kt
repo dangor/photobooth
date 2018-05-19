@@ -21,7 +21,9 @@ class HomeInteractor : Interactor<HomeInteractor.HomePresenter, HomeRouter>() {
         super.didBecomeActive(savedInstanceState)
 
         presenter.photoClicks
-                .subscribe { router.attachPhoto() }
+                .subscribe {
+                    router.attachPhoto()
+                }
 
         presenter.videoClicks
                 .subscribe {  }
