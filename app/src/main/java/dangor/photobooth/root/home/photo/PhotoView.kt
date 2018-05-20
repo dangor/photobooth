@@ -10,6 +10,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import dangor.photobooth.R
+import dangor.photobooth.extensions.Bitmaps
 import dangor.photobooth.extensions.clicks
 import dangor.photobooth.extensions.isVisible
 import io.reactivex.Observable
@@ -84,7 +85,7 @@ class PhotoView @JvmOverloads constructor(
 
     override fun addPhotoPreview(file: File) {
         val imageView = LayoutInflater.from(context).inflate(R.layout.image_view, taken_photos, false) as ImageView
-        imageView.setImageURI(Uri.fromFile(file))
+        imageView.setImageBitmap(Bitmaps.getScaledBitmap(context, Uri.fromFile(file)))
         taken_photos.addView(imageView)
         taken_photos.isVisible = true
     }

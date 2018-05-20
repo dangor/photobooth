@@ -54,6 +54,7 @@
         android:drawableEnd="@drawable/ic_send_black_24dp"
         android:drawablePadding="16dp"
         android:drawableTint="@color/enabled_blue_dark"
+        android:drawableTintMode="src_in"
         android:enabled="false"
         android:paddingEnd="8dp"
         android:paddingStart="28dp"

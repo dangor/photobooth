@@ -30,19 +30,19 @@
 
             <LinearLayout
                 android:id="@+id/taken_photos"
-                android:layout_width="166dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:divider="@drawable/image_view_spacer"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingEnd="8dp"
-                android:paddingStart="8dp"
-                android:paddingTop="16dp"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="8dp"
                 android:showDividers="middle"/>
 
             <ImageView
-                android:layout_width="166dp"
+                android:layout_width="108dp"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:src="@drawable/photobooth_footer_with_graphic"
@@ -137,7 +137,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:text="Finished"
+                    android:text="Start over"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="italic"

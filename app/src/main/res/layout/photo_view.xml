@@ -81,11 +81,11 @@
         android:layout_margin="24dp"
         android:background="@color/white"
         android:divider="@drawable/image_view_spacer"
-        android:visibility="gone"
         android:orientation="vertical"
         android:paddingBottom="16dp"
         android:paddingEnd="8dp"
         android:paddingStart="8dp"
         android:paddingTop="16dp"
-        android:showDividers="middle"/>
+        android:showDividers="middle"
+        android:visibility="gone"/>
 </dangor.photobooth.root.home.photo.PhotoView>

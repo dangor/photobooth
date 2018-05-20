@@ -16,6 +16,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import dangor.photobooth.R
+import dangor.photobooth.extensions.Bitmaps
 import dangor.photobooth.extensions.clicks
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
@@ -74,8 +75,8 @@ class ReviewView @JvmOverloads constructor(
 
     override fun setPictures(pictures: List<File>) {
         pictures.forEach { file ->
-            val imageView = LayoutInflater.from(context).inflate(R.layout.image_view_large, taken_photos, false) as ImageView
-            imageView.setImageURI(Uri.fromFile(file))
+            val imageView = LayoutInflater.from(context).inflate(R.layout.image_view, taken_photos, false) as ImageView
+            imageView.setImageBitmap(Bitmaps.getScaledBitmap(context, Uri.fromFile(file)))
             taken_photos.addView(imageView)
         }
 
@@ -128,12 +129,12 @@ class ReviewView @JvmOverloads constructor(
         val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), ALBUM_NAME)
         folder.mkdirs()
 
-        val file = File(folder, "${FILE_PREFIX}_$timestamp.jpg")
+        val file = File(folder, "${FILE_PREFIX}_$timestamp.png")
         file.createNewFile()
 
         val stream = FileOutputStream(file)
         stream.use {
-            b.compress(Bitmap.CompressFormat.JPEG, SAVED_FILE_QUALITY, it)
+            b.compress(Bitmap.CompressFormat.PNG, SAVED_FILE_QUALITY, it)
         }
 
         photoStripSavedSubject.onNext(file)
@@ -141,8 +142,8 @@ class ReviewView @JvmOverloads constructor(
 
     companion object {
         private const val ALBUM_NAME = "DangPhotobooth"
-        private const val FILE_PREFIX = "photostrip"
-        private const val SAVED_FILE_QUALITY = 90
+        private const val FILE_PREFIX = "dang_photobooth"
+        private const val SAVED_FILE_QUALITY = 100
         private const val SAVED_FILE_SCALE = 2f
     }
 }
