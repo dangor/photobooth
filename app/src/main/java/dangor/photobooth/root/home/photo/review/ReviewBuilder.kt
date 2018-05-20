@@ -1,5 +1,6 @@
 package dangor.photobooth.root.home.photo.review
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.uber.rib.core.InteractorBaseComponent
@@ -69,6 +70,11 @@ class ReviewBuilder(dependency: ParentComponent) : ViewBuilder<ReviewView, Revie
 
             @ReviewScope @Provides @JvmStatic @Named("loggerTag")
             internal fun loggerTag(): String = ReviewInteractor::class.java.simpleName
+
+            @ReviewScope @Provides @JvmStatic
+            internal fun appContext(view: ReviewView): Context {
+                return view.context.applicationContext
+            }
         }
     }
 

@@ -21,7 +21,7 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
     @Inject lateinit var listener: Listener
     @Inject lateinit var permissionService: PermissionService
 
-    var savedFiles = emptyList<File>()
+    private var savedFiles = emptyList<File>()
 
     override fun didBecomeActive(savedInstanceState: Bundle?) {
         super.didBecomeActive(savedInstanceState)

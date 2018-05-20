@@ -4,5 +4,6 @@ import android.Manifest
 
 enum class Permission(val permissions: Array<String>, val requestCode: Int) {
     CAMERA(arrayOf(Manifest.permission.CAMERA), 1),
-    EXTERNAL_STORAGE(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 2)
+    EXTERNAL_STORAGE(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 2),
+    GET_ACCOUNTS(arrayOf(Manifest.permission.GET_ACCOUNTS), 3)
 }

@@ -11,13 +11,17 @@ import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Toast
 import dangor.photobooth.R
 import dangor.photobooth.extensions.clicks
+import dangor.photobooth.extensions.isVisible
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.review_view.view.done_button
+import kotlinx.android.synthetic.main.review_view.view.saved_notification
 import kotlinx.android.synthetic.main.review_view.view.share_button
 import kotlinx.android.synthetic.main.review_view.view.taken_photos
 import org.joda.time.DateTime
@@ -36,11 +40,21 @@ class ReviewView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
 ) : FrameLayout(context, attrs, defStyle), ReviewInteractor.ReviewPresenter {
 
-    override val shareClicks: Observable<Unit> by lazy { share_button.clicks.share() }
+    override val shareClicks: Observable<Unit> by lazy { share_button.clicks.filter { share_button.alpha == 1f }.share() }
     override val doneClicks: Observable<Unit> by lazy { done_button.clicks.share() }
 
     private val externalStoragePermissionRequestSubject = PublishSubject.create<Unit>()
     override val externalStoragePermissionRequests: Observable<Unit> get() = externalStoragePermissionRequestSubject.hide()
+
+    private val photoStripSavedSubject = PublishSubject.create<File>()
+    override val photoStripSaved: Observable<File> get() = photoStripSavedSubject.hide()
+
+    override fun setIsShareEnabled(enabled: Boolean) {
+        share_button.alpha = when {
+            enabled -> 1f
+            else -> 0.26f
+        }
+    }
 
     override fun setPictures(pictures: List<File>) {
         pictures.forEachIndexed { index, file ->
@@ -56,6 +70,17 @@ class ReviewView @JvmOverloads constructor(
 
     override fun externalStoragePermissionGranted() {
         savePhotoStrip()
+    }
+
+    override fun showSentToast() {
+        Toast.makeText(context, "Email sent!", Toast.LENGTH_LONG).show()
+    }
+
+    override fun setIsSaveNotificationVisible(visible: Boolean) {
+        saved_notification.visibility = when {
+            visible -> View.VISIBLE
+            else -> View.INVISIBLE
+        }
     }
 
     private fun savePhotoStrip() {
@@ -84,11 +109,10 @@ class ReviewView @JvmOverloads constructor(
             b.compress(Bitmap.CompressFormat.PNG, UNUSED_PNG_QUALITY, it)
         }
 
-        Log.i(TAG, "Saved photo to file ${file.absolutePath}")
+        photoStripSavedSubject.onNext(file)
     }
 
     companion object {
-        private const val TAG = "ReviewView"
         private const val ALBUM_NAME = "DangPhotobooth"
         private const val FILE_PREFIX = "photostrip"
         private const val UNUSED_PNG_QUALITY = 100
