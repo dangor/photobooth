@@ -2,6 +2,7 @@ package dangor.photobooth.root.home.photo
 
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.CountDownTimer
 import android.util.AttributeSet
@@ -84,9 +85,9 @@ class PhotoView @JvmOverloads constructor(
         camera_capture.takePhoto()
     }
 
-    override fun addPhotoPreview(file: File) {
+    override fun addPhotoPreview(bitmap: Bitmap) {
         val imageView = LayoutInflater.from(context).inflate(R.layout.image_view, taken_photos, false) as ImageView
-        imageView.setImageBitmap(Bitmaps.getScaledBitmap(context, Uri.fromFile(file)))
+        imageView.setImageBitmap(bitmap)
         taken_photos.addView(imageView)
         taken_photos.isVisible = true
     }

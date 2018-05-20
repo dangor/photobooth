@@ -1,5 +1,6 @@
 package dangor.photobooth.root.home.photo
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.uber.rib.core.InteractorBaseComponent
@@ -7,6 +8,7 @@ import com.uber.rib.core.ViewBuilder
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Provides
+import dangor.photobooth.MainActivity
 import dangor.photobooth.R
 import dangor.photobooth.services.ServiceModule
 import javax.inject.Named
@@ -63,6 +65,11 @@ class PhotoBuilder(dependency: ParentComponent) : ViewBuilder<PhotoView, PhotoRo
 
             @PhotoScope @Provides @JvmStatic @Named("loggerTag")
             internal fun loggerTag(): String = PhotoInteractor::class.java.simpleName
+
+            @PhotoScope @Provides @JvmStatic
+            internal fun activityContext(): Context {
+                return MainActivity.instance
+            }
         }
     }
 
