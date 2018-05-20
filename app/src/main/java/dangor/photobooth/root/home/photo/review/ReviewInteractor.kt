@@ -50,6 +50,7 @@ class ReviewInteractor : Interactor<ReviewInteractor.ReviewPresenter, ReviewRout
         val emailSender = EmailSender(appContext, permissionService)
 
         presenter.photoStripSaved
+                .observeOn(Schedulers.io())
                 .switchMap { emailSender.initialize().toObservable() }
                 .observeOn(AndroidSchedulers.mainThread())
                 .autoDisposable(this)

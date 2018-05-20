@@ -16,6 +16,7 @@ import dangor.photobooth.extensions.isVisible
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.photo_view.view.camera_capture
+import kotlinx.android.synthetic.main.photo_view.view.overlay_frame
 import kotlinx.android.synthetic.main.photo_view.view.start_button
 import kotlinx.android.synthetic.main.photo_view.view.taken_photos
 import kotlinx.android.synthetic.main.photo_view.view.timer_progress
@@ -88,5 +89,9 @@ class PhotoView @JvmOverloads constructor(
         imageView.setImageBitmap(Bitmaps.getScaledBitmap(context, Uri.fromFile(file)))
         taken_photos.addView(imageView)
         taken_photos.isVisible = true
+    }
+
+    override fun setOverlayVisible(visible: Boolean) {
+        overlay_frame.isVisible = visible
     }
 }

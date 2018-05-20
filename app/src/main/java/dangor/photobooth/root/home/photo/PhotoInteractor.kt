@@ -40,6 +40,7 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
 
         presenter.timerDone
                 .subscribe {
+                    presenter.setOverlayVisible(true)
                     presenter.takePhoto()
                 }
 
@@ -47,11 +48,13 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     savedFiles += it
-                    presenter.addPhotoPreview(it)
 
                     if (savedFiles.size >= PHOTO_MAX) {
+                        presenter.setOverlayVisible(false)
                         listener.photosTaken(savedFiles)
                     } else {
+                        presenter.addPhotoPreview(it)
+                        presenter.setOverlayVisible(false)
                         presenter.startTimer(TIMER_LENGTH)
                     }
                 }
@@ -77,6 +80,7 @@ class PhotoInteractor : Interactor<PhotoInteractor.PhotoPresenter, PhotoRouter>(
         fun hideTimer()
         fun takePhoto()
         fun addPhotoPreview(file: File)
+        fun setOverlayVisible(visible: Boolean)
     }
 
     /**
