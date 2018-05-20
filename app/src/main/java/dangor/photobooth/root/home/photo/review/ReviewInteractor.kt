@@ -1,8 +1,6 @@
 package dangor.photobooth.root.home.photo.review
 
 import android.content.Context
-import android.util.Log
-import com.google.api.services.gmail.Gmail
 import com.uber.autodispose.kotlin.autoDisposable
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
@@ -58,14 +56,28 @@ class ReviewInteractor : Interactor<ReviewInteractor.ReviewPresenter, ReviewRout
                 .subscribe { presenter.setIsShareEnabled(true) }
 
         presenter.shareClicks
-                .withLatestFrom(presenter.photoStripSaved, { _, file -> file })
+                .subscribe { presenter.showEmailAddressDialog() }
+
+        presenter.emailAddressGiven
+                .doOnNext { presenter.setIsShareEnabled(false) }
+                .withLatestFrom(presenter.photoStripSaved, { email, file -> email to file })
                 .observeOn(Schedulers.io())
-                .switchMap { emailSender.sendPhoto(TODO(), it) }
+                .switchMap { (email, file) ->
+                    emailSender.sendPhoto(email, file)
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .autoDisposable(this)
-                .subscribe {
-                    presenter.showSentToast()
-                }
+                .subscribe({
+                    presenter.showEmailSentNotification()
+                    presenter.setIsShareEnabled(true)
+                }, {
+                    val errorString = when (it) {
+                        is SendEmailException -> "Could not send email to ${it.email}: ${it.cause?.localizedMessage}"
+                        else -> "Error: ${it.localizedMessage}"
+                    }
+                    presenter.showError(errorString)
+                    presenter.setIsShareEnabled(true)
+                })
     }
 
     override fun handleBackPress(): Boolean {
@@ -81,11 +93,14 @@ class ReviewInteractor : Interactor<ReviewInteractor.ReviewPresenter, ReviewRout
         val doneClicks: Observable<Unit>
         val externalStoragePermissionRequests: Observable<Unit>
         val photoStripSaved: Observable<File>
+        val emailAddressGiven: Observable<String>
 
+        fun showEmailAddressDialog()
         fun setIsShareEnabled(enabled: Boolean)
         fun setPictures(pictures: List<File>)
         fun externalStoragePermissionGranted()
-        fun showSentToast()
+        fun showEmailSentNotification()
+        fun showError(error: String)
         fun setIsSaveNotificationVisible(visible: Boolean)
     }
 

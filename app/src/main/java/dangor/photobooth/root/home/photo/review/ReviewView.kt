@@ -1,6 +1,7 @@
 package dangor.photobooth.root.home.photo.review
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -23,6 +24,7 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.review_view.view.done_button
 import kotlinx.android.synthetic.main.review_view.view.saved_notification
 import kotlinx.android.synthetic.main.review_view.view.share_button
+import kotlinx.android.synthetic.main.review_view.view.share_button_text
 import kotlinx.android.synthetic.main.review_view.view.taken_photos
 import org.joda.time.DateTime
 import java.io.File
@@ -49,6 +51,21 @@ class ReviewView @JvmOverloads constructor(
     private val photoStripSavedSubject = PublishSubject.create<File>()
     override val photoStripSaved: Observable<File> get() = photoStripSavedSubject.hide()
 
+    private val emailAddressSubject = PublishSubject.create<String>()
+    override val emailAddressGiven: Observable<String> get() = emailAddressSubject.hide()
+
+    override fun showEmailAddressDialog() {
+        val prompt = EmailPrompt(context)
+        prompt.emailGiven
+                .subscribe {
+                    emailAddressSubject.onNext(it)
+                    prompt.dismiss()
+                }
+        prompt.cancelClicks
+                .subscribe { prompt.dismiss() }
+        prompt.show()
+    }
+
     override fun setIsShareEnabled(enabled: Boolean) {
         share_button.alpha = when {
             enabled -> 1f
@@ -72,8 +89,14 @@ class ReviewView @JvmOverloads constructor(
         savePhotoStrip()
     }
 
-    override fun showSentToast() {
+    override fun showEmailSentNotification() {
         Toast.makeText(context, "Email sent!", Toast.LENGTH_LONG).show()
+        @SuppressLint("SetTextI18n")
+        share_button_text.text = "Sent! Send another?"
+    }
+
+    override fun showError(error: String) {
+        Toast.makeText(context, error, Toast.LENGTH_LONG).show()
     }
 
     override fun setIsSaveNotificationVisible(visible: Boolean) {

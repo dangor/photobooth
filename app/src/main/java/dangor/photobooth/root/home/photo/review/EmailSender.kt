@@ -36,13 +36,15 @@ class EmailSender(appContext: Context, private val permissionService: Permission
     private val sharedPref = appContext.getSharedPreferences(TAG, Context.MODE_PRIVATE)
 
     fun sendPhoto(to: String, file: File): Observable<Unit> {
-        val content = createEmailWithAttachment(to, credential.selectedAccountName, SUBJECT, BODY, file)
+        val content = createEmailWithAttachment(to, SUBJECT, BODY, file)
         try {
             sendMessage(getService(), "me", content)
         } catch (e: UserRecoverableAuthIOException) {
             return permissionService.startActivityForResult(e.intent, RC_AUTHZ)
                     .observeOn(Schedulers.io())
                     .switchMap { sendPhoto(to, file) }
+        } catch (e: Exception) {
+            throw SendEmailException(to, e)
         }
         return Observable.just(Unit)
     }
@@ -86,7 +88,6 @@ class EmailSender(appContext: Context, private val permissionService: Permission
     }
 
     private fun createEmailWithAttachment(to: String,
-                                          from: String,
                                           subject: String,
                                           bodyText: String,
                                           file: File): MimeMessage {
@@ -94,24 +95,22 @@ class EmailSender(appContext: Context, private val permissionService: Permission
         val session = Session.getDefaultInstance(props, null)
 
         val email = MimeMessage(session)
-
-        email.setFrom(InternetAddress(from))
+        email.setFrom(InternetAddress(credential.selectedAccountName, FROM_PERSONAL))
         email.addRecipient(javax.mail.Message.RecipientType.TO, InternetAddress(to))
         email.subject = subject
 
-        var mimeBodyPart = MimeBodyPart()
-        mimeBodyPart.setContent(bodyText, "text/plain")
-
         val multipart = MimeMultipart()
-        multipart.addBodyPart(mimeBodyPart)
 
-        mimeBodyPart = MimeBodyPart()
+        val mimeText = MimeBodyPart()
+        mimeText.setContent(bodyText, "text/plain")
+        multipart.addBodyPart(mimeText)
+
+        val mimeFile = MimeBodyPart()
         val source = FileDataSource(file)
+        mimeFile.dataHandler = DataHandler(source)
+        mimeFile.fileName = file.name
+        multipart.addBodyPart(mimeFile)
 
-        mimeBodyPart.dataHandler = DataHandler(source)
-        mimeBodyPart.fileName = file.name
-
-        multipart.addBodyPart(mimeBodyPart)
         email.setContent(multipart)
 
         return email
@@ -120,10 +119,12 @@ class EmailSender(appContext: Context, private val permissionService: Permission
     private fun createMessageWithEmail(emailContent: MimeMessage): Message {
         val buffer = ByteArrayOutputStream()
         emailContent.writeTo(buffer)
+
         val bytes = buffer.toByteArray()
         val encodedEmail = Base64.encodeBase64URLSafeString(bytes)
         val message = Message()
         message.raw = encodedEmail
+
         return message
     }
 
@@ -141,7 +142,10 @@ class EmailSender(appContext: Context, private val permissionService: Permission
         private const val RC_AUTHZ = 1002
         private val SCOPES = listOf(GmailScopes.GMAIL_SEND)
 
-        private const val SUBJECT = "Thank you for a Dang good time!"
-        private const val BODY = "Thanks for being a part of the best Dang wedding!\nBrian and Angela Dang"
+        private const val FROM_PERSONAL = "Brian and Angela Dang"
+        private const val SUBJECT = "Thank You for a Dang Good Time!"
+        private const val BODY = "Thanks for being a part of the best Dang wedding!\n\nLove,\nBrian and Angela Dang"
     }
 }
+
+class SendEmailException(val email: String, e: Exception) : Exception(e)
