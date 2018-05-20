@@ -1,9 +1,9 @@
 package dangor.photobooth.root.home.photo.review
 
+import android.app.Activity
 import android.content.Context
 import android.support.v7.app.AppCompatDialog
 import android.util.Patterns.EMAIL_ADDRESS
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import dangor.photobooth.R
 import dangor.photobooth.extensions.clicks
@@ -23,10 +23,6 @@ class EmailPrompt(context: Context) : AppCompatDialog(context) {
         setContentView(R.layout.email_dialog)
         window.setDimAmount(0.3.toFloat())
 
-        //dialog appears over all input methods
-        window.setFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
-                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
-
         setOnShowListener {
             email_input.apply {
                 requestFocus()
@@ -44,10 +40,20 @@ class EmailPrompt(context: Context) : AppCompatDialog(context) {
                 .subscribe(send_button::setEnabled)
     }
 
-    val cancelClicks: Observable<Unit> by lazy { cancel_button.clicks.share() }
+    private fun hideKeyboard() {
+        val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(email_input.windowToken, 0)
+    }
+
+    val cancelClicks: Observable<Unit> by lazy {
+        cancel_button.clicks
+                .doOnNext { hideKeyboard() }
+                .share()
+    }
     val emailGiven: Observable<String> by lazy {
         send_button.clicks
                 .withLatestFrom(textChanges, { _, text -> text })
+                .doOnNext { hideKeyboard() }
                 .share()
     }
 }
