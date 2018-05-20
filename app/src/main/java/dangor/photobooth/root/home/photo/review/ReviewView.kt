@@ -30,6 +30,7 @@ import org.joda.time.DateTime
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import kotlin.math.roundToInt
 
 /**
  * Top level view for Review
@@ -114,8 +115,13 @@ class ReviewView @JvmOverloads constructor(
         }
 
         // Write to bitmap
-        val b = Bitmap.createBitmap(taken_photos.width, taken_photos.height, Bitmap.Config.ARGB_8888)
+        val b = Bitmap.createBitmap(
+                (taken_photos.width * SAVED_FILE_SCALE).roundToInt(),
+                (taken_photos.height * SAVED_FILE_SCALE).roundToInt(),
+                Bitmap.Config.ARGB_8888
+        )
         val c = Canvas(b)
+        c.scale(SAVED_FILE_SCALE, SAVED_FILE_SCALE)
         taken_photos.draw(c)
 
         // Write to file
@@ -124,12 +130,12 @@ class ReviewView @JvmOverloads constructor(
         val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), ALBUM_NAME)
         folder.mkdirs()
 
-        val file = File(folder, "${FILE_PREFIX}_$timestamp.png")
+        val file = File(folder, "${FILE_PREFIX}_$timestamp.jpg")
         file.createNewFile()
 
         val stream = FileOutputStream(file)
         stream.use {
-            b.compress(Bitmap.CompressFormat.PNG, UNUSED_PNG_QUALITY, it)
+            b.compress(Bitmap.CompressFormat.JPEG, SAVED_FILE_QUALITY, it)
         }
 
         photoStripSavedSubject.onNext(file)
@@ -138,6 +144,7 @@ class ReviewView @JvmOverloads constructor(
     companion object {
         private const val ALBUM_NAME = "DangPhotobooth"
         private const val FILE_PREFIX = "photostrip"
-        private const val UNUSED_PNG_QUALITY = 100
+        private const val SAVED_FILE_QUALITY = 90
+        private const val SAVED_FILE_SCALE = 2f
     }
 }
