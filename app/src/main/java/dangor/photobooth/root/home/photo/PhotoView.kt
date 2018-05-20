@@ -61,7 +61,7 @@ class PhotoView @JvmOverloads constructor(
     private inner class CountDown(
             seconds: Int,
             private val onTick: (Int) -> Unit
-    ) : CountDownTimer(seconds * 1000L, 1000L) {
+    ) : CountDownTimer(seconds * 1000L, 500L) {
 
         override fun onFinish() {
             timerDoneSubject.onNext(Unit)
