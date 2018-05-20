@@ -17,32 +17,37 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/taken_photos"
+            android:id="@+id/photo_strip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="24dp"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:divider="@drawable/image_view_spacer"
-            android:gravity="center"
             android:orientation="vertical"
-            android:paddingBottom="16dp"
-            android:paddingEnd="8dp"
-            android:paddingStart="8dp"
-            android:paddingTop="16dp"
-            android:showDividers="middle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/controls"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <LinearLayout
+                android:id="@+id/taken_photos"
+                android:layout_width="166dp"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:divider="@drawable/image_view_spacer"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                android:paddingTop="16dp"
+                android:showDividers="middle"/>
+
             <ImageView
-                android:layout_width="150dp"
+                android:layout_width="166dp"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:src="@drawable/photobooth_footer"
+                android:src="@drawable/photobooth_footer_with_graphic"
                 tools:ignore="ContentDescription"/>
+
         </LinearLayout>
 
         <LinearLayout
@@ -50,19 +55,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/taken_photos"
+            app:layout_constraintStart_toEndOf="@+id/photo_strip"
             app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:id="@+id/saved_notification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="32dp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:visibility="invisible"

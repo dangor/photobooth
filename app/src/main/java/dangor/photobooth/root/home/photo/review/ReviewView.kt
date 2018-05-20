@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Environment
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -18,10 +17,10 @@ import android.widget.ImageView
 import android.widget.Toast
 import dangor.photobooth.R
 import dangor.photobooth.extensions.clicks
-import dangor.photobooth.extensions.isVisible
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.review_view.view.done_button
+import kotlinx.android.synthetic.main.review_view.view.photo_strip
 import kotlinx.android.synthetic.main.review_view.view.saved_notification
 import kotlinx.android.synthetic.main.review_view.view.share_button
 import kotlinx.android.synthetic.main.review_view.view.share_button_text
@@ -29,7 +28,6 @@ import kotlinx.android.synthetic.main.review_view.view.taken_photos
 import org.joda.time.DateTime
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import kotlin.math.roundToInt
 
 /**
@@ -75,10 +73,10 @@ class ReviewView @JvmOverloads constructor(
     }
 
     override fun setPictures(pictures: List<File>) {
-        pictures.forEachIndexed { index, file ->
+        pictures.forEach { file ->
             val imageView = LayoutInflater.from(context).inflate(R.layout.image_view_large, taken_photos, false) as ImageView
             imageView.setImageURI(Uri.fromFile(file))
-            taken_photos.addView(imageView, index) // always keep footer at bottom
+            taken_photos.addView(imageView)
         }
 
         this.post {
@@ -116,13 +114,13 @@ class ReviewView @JvmOverloads constructor(
 
         // Write to bitmap
         val b = Bitmap.createBitmap(
-                (taken_photos.width * SAVED_FILE_SCALE).roundToInt(),
-                (taken_photos.height * SAVED_FILE_SCALE).roundToInt(),
+                (photo_strip.width * SAVED_FILE_SCALE).roundToInt(),
+                (photo_strip.height * SAVED_FILE_SCALE).roundToInt(),
                 Bitmap.Config.ARGB_8888
         )
         val c = Canvas(b)
         c.scale(SAVED_FILE_SCALE, SAVED_FILE_SCALE)
-        taken_photos.draw(c)
+        photo_strip.draw(c)
 
         // Write to file
         val timestamp = DateTime.now().toString("yyyyMMdd_HHmmss")
