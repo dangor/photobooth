@@ -60,8 +60,10 @@ class CameraCaptureView @JvmOverloads constructor(
     }
 
     override fun onDetachedFromWindow() {
-        closeCamera()
-        stopBackgroundThread()
+        backgroundHandler?.post {
+            closeCamera()
+            stopBackgroundThread()
+        }
         super.onDetachedFromWindow()
     }
 
