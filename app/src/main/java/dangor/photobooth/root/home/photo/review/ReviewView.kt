@@ -18,9 +18,11 @@ import android.widget.Toast
 import dangor.photobooth.R
 import dangor.photobooth.extensions.Bitmaps
 import dangor.photobooth.extensions.clicks
+import dangor.photobooth.extensions.isVisible
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.review_view.view.done_button
+import kotlinx.android.synthetic.main.review_view.view.photo_progress
 import kotlinx.android.synthetic.main.review_view.view.photo_strip
 import kotlinx.android.synthetic.main.review_view.view.saved_notification
 import kotlinx.android.synthetic.main.review_view.view.share_button
@@ -73,12 +75,13 @@ class ReviewView @JvmOverloads constructor(
         }
     }
 
-    override fun setPictures(pictures: List<File>) {
-        pictures.forEach { file ->
+    override fun setPictures(pictures: List<Bitmap>) {
+        pictures.forEach {
             val imageView = LayoutInflater.from(context).inflate(R.layout.image_view, taken_photos, false) as ImageView
-            imageView.setImageBitmap(Bitmaps.getScaledBitmap(context, Uri.fromFile(file)))
+            imageView.setImageBitmap(it)
             taken_photos.addView(imageView)
         }
+        photo_progress.isVisible = false
 
         this.post {
             savePhotoStrip()

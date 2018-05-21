@@ -1,10 +1,13 @@
 package dangor.photobooth.root.home.photo.review
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
 import com.uber.autodispose.kotlin.autoDisposable
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibInteractor
+import dangor.photobooth.extensions.Bitmaps
 import dangor.photobooth.extensions.withLatestFrom
 import dangor.photobooth.services.PermissionService
 import dangor.photobooth.services.permissions.Permission
@@ -39,7 +42,12 @@ class ReviewInteractor : Interactor<ReviewInteractor.ReviewPresenter, ReviewRout
                 .autoDisposable(this)
                 .subscribe { presenter.externalStoragePermissionGranted() }
 
-        presenter.setPictures(pictures)
+        Observable.just(pictures)
+                .observeOn(Schedulers.computation())
+                .map { it.map { Bitmaps.getScaledBitmap(appContext, Uri.fromFile(it)) } }
+                .observeOn(AndroidSchedulers.mainThread())
+                .autoDisposable(this)
+                .subscribe { presenter.setPictures(it) }
 
         presenter.doneClicks
                 .subscribe { listener.doneClicked() }
@@ -98,7 +106,7 @@ class ReviewInteractor : Interactor<ReviewInteractor.ReviewPresenter, ReviewRout
 
         fun showEmailAddressDialog()
         fun setIsShareEnabled(enabled: Boolean)
-        fun setPictures(pictures: List<File>)
+        fun setPictures(pictures: List<Bitmap>)
         fun externalStoragePermissionGranted()
         fun showEmailSentNotification()
         fun showError(error: String)

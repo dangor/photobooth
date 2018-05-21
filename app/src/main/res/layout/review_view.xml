@@ -18,7 +18,7 @@
 
         <LinearLayout
             android:id="@+id/photo_strip"
-            android:layout_width="wrap_content"
+            android:layout_width="108dp"
             android:layout_height="wrap_content"
             android:layout_margin="24dp"
             android:orientation="vertical"
@@ -28,9 +28,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <FrameLayout
+                android:id="@+id/photo_progress"
+                android:layout_width="match_parent"
+                android:paddingTop="24dp"
+                android:background="@color/white"
+                android:layout_height="wrap_content">
+
+                <ProgressBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"/>
+
+            </FrameLayout>
+
             <LinearLayout
                 android:id="@+id/taken_photos"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:divider="@drawable/image_view_spacer"
@@ -42,7 +56,7 @@
                 android:showDividers="middle"/>
 
             <ImageView
-                android:layout_width="108dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:src="@drawable/photobooth_footer_with_graphic"
